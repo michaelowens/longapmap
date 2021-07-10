@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "outDir": "build",
+    "strict": true,
+    "moduleResolution": "node",
+    "module": "ES2020",
+    "lib": ["ES2020"],
+    "target": "es6"
+  },
+  "include": ["src/"]
+}

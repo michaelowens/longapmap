@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LongAP Map</title>
+    <link
+      href="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="map"></div>
+    <div id="overlay" x-cloak x-data="$store.overlay" x-show="loaded" x-transition.duration.500ms>
+      <h1>LongAP Map</h1>
+      <div>Onboarded: <span x-text="onboarded"></span></div>
+      <div>Asserted: <span x-text="asserted"></span></div>
+    </div>
+
+    <script src="main.js" type="module"></script>
+  </body>
+</html>
