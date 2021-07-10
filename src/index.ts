@@ -1,7 +1,7 @@
 import express from 'express'
 import schedule from 'node-schedule'
 import { setupDb, db } from './db.js'
-import { getHotspots } from './utils.js'
+import { updateHotspots } from './utils.js'
 
 const ownerAddress = '12zX4jgDGMbJgRwmCfRNGXBuphkQRqkUTcLzYHTQvd4Qgu8kiL4'
 
@@ -27,10 +27,10 @@ app.get('/stats', (req, res) => {
 
   if (!db.data?.lastHash) {
     console.log('No last hash found, assuming database is empty')
-    await getHotspots(ownerAddress)
+    await updateHotspots(ownerAddress)
   }
 
-  schedule.scheduleJob('0 0 * * *', () => getHotspots(ownerAddress))
+  schedule.scheduleJob('0 0 * * *', () => updateHotspots(ownerAddress))
   app.listen(port, () => {
     console.log(`App listening at http://localhost:${port}`)
   })

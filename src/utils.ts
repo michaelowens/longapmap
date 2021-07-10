@@ -16,14 +16,13 @@ export async function getHotspot(address: string): Promise<ApiHotspot> {
 }
 
 /**
- * Fetch all hotspots from an account address
+ * Fetch all (newly added) hotspots from an account address
  */
-export async function getHotspots(address = '') {
+export async function getHotspots(address: string) {
   if (!address) return
   if (!db.data) return
   console.log('Fetching hotspots')
 
-  // Get newly added hotspots
   let lastHash = ''
   let prevCursor = ''
   let added = 0
@@ -52,9 +51,16 @@ export async function getHotspots(address = '') {
     if (!prevCursor) break
   }
 
+  db.data.lastHash = lastHash
   console.log('Added', added, 'hotspots')
+}
 
-  // Update hotspot locations
+/**
+ * Update location for all the hotspots in the database
+ */
+export async function updateLocations() {
+  if (!db.data) return
+
   const hotspotCalls = Object.keys(db.data.hotspots).map((addr) =>
     getHotspot(addr)
   )
@@ -76,8 +82,14 @@ export async function getHotspots(address = '') {
       db.data.asserted += 1
     }
   }
+}
 
-  db.data.lastHash = lastHash
+export async function updateHotspots(address: string) {
+  if (!address) return
+  if (!db.data) return
+  await getHotspots(address)
+  await updateLocations()
+
   console.log('saving db')
   await db.write()
 }
