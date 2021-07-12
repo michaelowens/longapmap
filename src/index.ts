@@ -5,6 +5,7 @@ import { setupDb, db } from './db.js'
 import { updateHotspots } from './utils.js'
 
 const ownerAddress = '12zX4jgDGMbJgRwmCfRNGXBuphkQRqkUTcLzYHTQvd4Qgu8kiL4'
+const secretUpdateToken = process.env.SECRET_UPDATE_TOKEN || null
 
 const app = express()
 const port = process.env.PORT || 8080
@@ -22,6 +23,16 @@ app.get('/stats', (req, res) => {
     asserted,
     hotspots,
   })
+})
+
+app.get('/update/:token', (req, res) => {
+  if (req.params.token && req.params.token === secretUpdateToken) {
+    updateHotspots(ownerAddress)
+    return res.json({
+      message: 'Forced update of db, this could take 5-60 seconds.',
+    })
+  }
+  res.json({ error: 'Nice try :)' })
 })
 ;(async () => {
   await setupDb()
