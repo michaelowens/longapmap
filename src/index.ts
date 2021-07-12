@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import express from 'express'
 import schedule from 'node-schedule'
 import { setupDb, db } from './db.js'
