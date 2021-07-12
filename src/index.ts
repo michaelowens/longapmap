@@ -42,7 +42,7 @@ app.get('/update/:token', (req, res) => {
     await updateHotspots(ownerAddress)
   }
 
-  schedule.scheduleJob('0 0 * * *', () => updateHotspots(ownerAddress))
+  schedule.scheduleJob('0 */6 * * *', () => updateHotspots(ownerAddress))
   app.listen(port, () => {
     console.log(`App listening at http://localhost:${port}`)
   })
