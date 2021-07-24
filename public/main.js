@@ -108,8 +108,6 @@ map.on('load', async function () {
     },
   })
 
-  console.log({ witnessesFeatures })
-
   map.addLayer({
     id: 'witnesses',
     type: 'line',
@@ -131,13 +129,6 @@ map.on('load', async function () {
     source: 'points',
     paint: {
       'circle-radius': 4,
-      // {
-      //   base: 5,
-      //   // stops: [
-      //   //   [12, 2],
-      //   //   [22, 180],
-      //   // ],
-      // },
       'circle-color': '#0080FE',
     },
   })
