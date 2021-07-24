@@ -3,8 +3,14 @@ export class Hotspot {
   address = ''
   lat: number | null = null
   lng: number | null = null
+  witnesses?: string[]
 
-  constructor(address = '', name = '', lat = null, lng = null) {
+  constructor(
+    address = '',
+    name = '',
+    lat: number | null = null,
+    lng: number | null = null
+  ) {
     this.address = address
     this.name = name
     this.lat = lat

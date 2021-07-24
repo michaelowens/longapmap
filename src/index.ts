@@ -17,11 +17,12 @@ app.get('/stats', (req, res) => {
     return res.json({ error: 'Could not get stats' })
   }
 
-  const { onboarded, asserted, hotspots } = db.data
+  const { onboarded, asserted, hotspots, witnesses } = db.data
   res.json({
     onboarded,
     asserted,
     hotspots,
+    witnesses,
   })
 })
 

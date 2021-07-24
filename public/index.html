@@ -13,10 +13,26 @@
   </head>
   <body>
     <div id="map"></div>
-    <div id="overlay" x-cloak x-data="$store.overlay" x-show="loaded" x-transition.duration.500ms>
+    <div
+      id="overlay"
+      x-cloak
+      x-data="$store.overlay"
+      x-show="loaded"
+      x-transition.duration.500ms
+    >
       <h1>LongAP Map</h1>
       <div>Onboarded: <span x-text="onboarded"></span></div>
       <div>Asserted: <span x-text="asserted"></span></div>
+      <div style="margin-top: 5px">
+        <label for="witnessOverlay">
+          <input
+            id="witnessOverlay"
+            type="checkbox"
+            @change="changeWitnessOverlay"
+          />
+          Witness overlay</label
+        >
+      </div>
     </div>
 
     <script src="main.js" type="module"></script>

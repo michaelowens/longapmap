@@ -1,14 +1,34 @@
 import fetch from 'node-fetch'
-import { setupDb, db } from './db.js'
+import { db } from './db.js'
 import { Activity, ApiHotspot, Hotspot } from './models.js'
+
+const heliumApi = async (path: string) => {
+  try {
+    const req = await fetch('https://api.helium.io/v1/' + path)
+    return await req.json()
+  } catch (error) {
+    throw new Error(error)
+  }
+}
 
 /**
  * Fetch a single hotspot by address
  */
 export async function getHotspot(address: string): Promise<ApiHotspot> {
   try {
-    const req = await fetch('https://api.helium.io/v1/hotspots/' + address)
-    const { data } = await req.json()
+    const { data } = await heliumApi('hotspots/' + address)
+    return data
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
+/**
+ * Fetch witnesses for a single hotspot by address
+ */
+export async function getWitnesses(address: string): Promise<ApiHotspot[]> {
+  try {
+    const { data } = await heliumApi(`hotspots/${address}/witnesses`)
     return data
   } catch (error) {
     throw new Error(error)
@@ -28,10 +48,9 @@ export async function getHotspots(address: string) {
   let added = 0
   let stop = false
   while (true && !stop) {
-    const req = await fetch(
-      `https://api.helium.io/v1/accounts/${address}/activity?cursor=${prevCursor}`
+    let { data, cursor } = await heliumApi(
+      `accounts/${address}/activity?cursor=${prevCursor}`
     )
-    let { data, cursor } = await req.json()
 
     for (let act of data as Activity[]) {
       if (!lastHash) lastHash = act.hash
@@ -84,11 +103,42 @@ export async function updateLocations() {
   }
 }
 
+export async function updateWitnesses() {
+  if (!db.data) return
+
+  const dbHotspots = Object.keys(db.data.hotspots)
+  const witnessCalls = dbHotspots.map((addr) => getWitnesses(addr))
+  const results = await Promise.allSettled(witnessCalls)
+
+  db.data.witnesses = {}
+
+  for (let i = 0; i < results.length; i++) {
+    const result = results[i]
+    if (result.status === 'rejected') {
+      console.log('Could not fetch witnesses for hotspot', result.reason)
+      continue
+    }
+
+    const parentAddress = dbHotspots[i]
+    let witnesses: string[] = []
+    for (const hs of result.value) {
+      const { address, name, lat, lng } = hs
+      if (!(address in db.data.witnesses)) {
+        db.data.witnesses[address] = new Hotspot(address, name, lat, lng)
+      }
+      witnesses.push(address)
+    }
+
+    db.data.hotspots[parentAddress].witnesses = witnesses
+  }
+}
+
 export async function updateHotspots(address: string) {
   if (!address) return
   if (!db.data) return
   await getHotspots(address)
   await updateLocations()
+  await updateWitnesses()
 
   console.log('saving db')
   await db.write()

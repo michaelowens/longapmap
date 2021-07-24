@@ -7,6 +7,7 @@ type Data = {
   onboarded: number
   asserted: number
   hotspots: { [key: string]: Hotspot }
+  witnesses: { [key: string]: Hotspot }
 }
 const file = fileURLToPath(new URL('../db.json', import.meta.url))
 const adapter = new JSONFile<Data>(file)
@@ -19,6 +20,7 @@ export const setupDb = async () => {
     onboarded: 0,
     asserted: 0,
     hotspots: {},
+    witnesses: {},
   }
   console.log('Loaded DB, hotspot count:', Object.keys(db.data.hotspots).length)
 }
