@@ -64,7 +64,7 @@ map.on('load', async function () {
 
     for (const witnessAddr of hs.witnesses) {
       const witness = witnesses[witnessAddr]
-      if (!(witnessAddr in hotspots)) continue
+      if (!(witnessAddr in hotspots) || !witness) continue
 
       let linkExists = witnessesFeatures.find((f) => {
         const { coordinates } = f.geometry
