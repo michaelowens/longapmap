@@ -118,6 +118,10 @@ export async function updateWitnesses() {
       console.log('Could not fetch witnesses for hotspot', result.reason)
       continue
     }
+    if (!result.value) {
+      console.log('Could not fetch witnesses for hotspot, no results')
+      continue
+    }
 
     const parentAddress = dbHotspots[i]
     let witnesses: string[] = []
