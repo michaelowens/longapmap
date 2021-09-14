@@ -2,12 +2,26 @@ import fetch from 'node-fetch'
 import { db } from './db.js'
 import { Activity, ApiHotspot, Hotspot } from './models.js'
 
-const heliumApi = async (path: string) => {
+const timeout = (ms = 100) => {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(true), ms)
+  })
+}
+
+const heliumApi = async (path: string, afterError = false): Promise<any> => {
   try {
     const req = await fetch('https://api.helium.io/v1/' + path)
-    return await req.json()
+    const result = await req.json()
+    if ('error' in result) throw new Error(result.error)
+    if (afterError) console.log(path, 'was succesful after some retries')
+
+    return result
   } catch (error) {
-    throw new Error(error)
+    console.log('Retrying', path, 'in 20 seconds')
+
+    await timeout(20000)
+    return await heliumApi(path, true)
+    // throw new Error(error)
   }
 }
 
